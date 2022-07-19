@@ -1,0 +1,27 @@
+// Copyright: Elliot Xu<hack00mind@gmail.com>
+// License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+
+vim9 = _{ SOI ~ vim9_declare ~ expr* ~ EOI }
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT = _{ comment_line }
+comment_line = @{ "#" ~ (!("\r" | "\n") ~ ANY)* }
+
+keyword = { vim9_declare_keyword | var_declare_keyword }
+vim9_declare_keyword = { "vim9script" }
+var_declare_keyword = { "var" | "const" | "final" }
+
+expr = _{ var_decalre }
+
+vim9_declare = { vim9_declare_keyword }
+var_decalre = { var_declare_keyword ~ ident ~ assign ~ number }
+ident = @{ !keyword ~ LETTER ~ (LETTER | ASCII_DIGIT | "_")* }
+
+operation = _{ assign }
+assign = { "=" }
+
+number = @{
+    "-"?
+    ~ ("0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+    ~ ("." ~ ASCII_DIGIT*)?
+}
